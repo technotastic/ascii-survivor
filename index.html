@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ASCII Survivor</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Splash Screen -->
+    <div id="splashScreen" class="screen">
+        <h1>ASCII Survivor</h1>
+        <p>Survive the onslaught! Move with WASD/Arrow Keys or Touch.</p>
+        <p>Weapons fire automatically. Collect <span class="xp-orb-text">*</span> (XP) and level up!</p>
+        <p>Avoid the enemies ('e', 'o', 'X'). How long can you last?</p>
+        <button id="startButton" class="button">Start Game</button>
+        <h2>High Scores:</h2>
+        <ul id="splashHighScores"><li>Loading...</li></ul>
+    </div>
+
+    <!-- Game Area -->
+    <div id="gameContainer" style="display: none;">
+        <!-- Using spans inside pre for potential character-specific styling -->
+        <pre id="gameScreen"></pre>
+        <div id="uiOverlay">
+            <span id="timer">Time: 00:00</span>
+            <span>HP: <span id="hpValue">100</span>/<span id="maxHpValue">100</span> <span id="healthBar"><span id="healthBarFill"></span></span></span>
+            <span>Lvl: <span id="levelValue">1</span></span>
+            <span>XP: <span id="xpBar"><span id="xpBarFill"></span></span></span>
+            <span id="score">Score: 0</span>
+        </div>
+         <!-- Touch Controls -->
+        <div id="touchControls">
+            <div id="touchStick"></div>
+        </div>
+        <button id="pauseButton">Pause</button>
+    </div>
+
+    <!-- Level Up Screen -->
+    <div id="levelUpScreen" class="screen" style="display: none;">
+        <h1>Level Up!</h1>
+        <p>Choose your upgrade:</p>
+        <div id="levelUpOptions">
+            <!-- Options will be populated by JS -->
+        </div>
+    </div>
+
+    <!-- Game Over Screen -->
+    <div id="gameOverScreen" class="screen" style="display: none;">
+        <h1>Game Over!</h1>
+        <p>You survived for: <span id="finalTime">00:00</span></p>
+        <p>Final Score: <span id="finalScore">0</span></p>
+        <button id="restartButton" class="button">Play Again</button>
+        <h2>High Scores:</h2>
+        <ul id="gameOverHighScores"><li>Loading...</li></ul>
+    </div>
+
+     <!-- Pause Screen -->
+    <div id="pauseScreen" class="screen" style="display: none;">
+        <h1>Paused</h1>
+        <button id="resumeButton" class="button">Resume</button>
+        <button id="quitButton" class="button">Quit to Menu</button>
+    </div>
+
+    <!-- Defer loading script until HTML is parsed -->
+    <script src="script.js" defer></script>
+</body>
+</html>

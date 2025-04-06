@@ -1,0 +1,240 @@
+body {
+    background-color: #111;
+    color: #eee;
+    font-family: 'Courier New', Courier, monospace;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+    overflow: hidden; /* Prevent scrolling */
+    touch-action: none; /* Disable browser touch gestures like pinch-zoom */
+}
+
+#gameContainer {
+    position: relative;
+    border: 1px solid #555;
+    background-color: #000;
+    /* Dimensions will be set by JS based on screen size */
+}
+
+#gameScreen {
+    white-space: pre;
+    font-size: 16px; /* Adjust for desired character size */
+    line-height: 1;
+    overflow: hidden;
+    /* Will be sized by JS */
+    /* Use spans for potential coloring */
+    color: #ccc; /* Default character color */
+}
+
+/* --- Character Specific Styling --- */
+#gameScreen .xp-orb {
+    color: cyan;
+    font-weight: bold;
+}
+#gameScreen .player {
+    color: lime;
+    font-weight: bold;
+}
+#gameScreen .player-invincible {
+    color: white; /* Flash white when invincible */
+    font-weight: bold;
+}
+#gameScreen .enemy-e { color: tomato; }
+#gameScreen .enemy-o { color: orange; }
+#gameScreen .enemy-X { color: magenta; }
+#gameScreen .projectile { color: yellow; }
+#gameScreen .projectile-spike { color: silver; }
+#gameScreen .projectile-dagger { color: white; }
+
+/* --- UI Overlay --- */
+#uiOverlay {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    right: 5px;
+    font-size: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center; /* Align items vertically */
+    pointer-events: none; /* Allow clicks/touches to pass through */
+    background-color: rgba(0,0,0,0.6);
+    padding: 4px 8px;
+    border-radius: 3px;
+    color: #eee; /* Ensure consistent text color */
+    font-weight: bold;
+}
+
+#uiOverlay span {
+    margin: 0 8px;
+    white-space: nowrap; /* Prevent text wrapping */
+}
+
+/* Health and XP Bars */
+#healthBar, #xpBar {
+    display: inline-block;
+    height: 12px; /* Slightly thicker */
+    width: 60px; /* Fixed width for bars */
+    border: 1px solid #666;
+    background-color: #333;
+    margin-left: 5px;
+    vertical-align: middle;
+    overflow: hidden; /* Hide overflow of fill */
+}
+#healthBarFill, #xpBarFill {
+    height: 100%;
+    background-color: red;
+    width: 100%; /* Controlled by JS */
+    transition: width 0.1s linear, background-color 0.2s ease; /* Smooth transitions */
+}
+#xpBarFill {
+    background-color: cyan;
+}
+
+/* --- Screens (Splash, Level Up, Game Over, Pause) --- */
+.screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    z-index: 10;
+    padding: 20px;
+    box-sizing: border-box;
+    color: #eee; /* Ensure text is visible */
+}
+
+.screen h1 {
+    margin-bottom: 20px;
+    color: #fff;
+    text-shadow: 0 0 8px #fff, 0 0 15px #5f5; /* Enhanced glow */
+}
+.screen p {
+    margin-bottom: 15px;
+    max-width: 600px;
+    line-height: 1.4;
+}
+.screen p .xp-orb-text { /* Style the XP orb char in instructions */
+    color: cyan;
+    font-weight: bold;
+}
+
+.button {
+    padding: 10px 20px;
+    margin: 10px;
+    background-color: #4a4a4a; /* Slightly lighter */
+    color: #eee;
+    border: 1px solid #999;
+    cursor: pointer;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 16px;
+    min-width: 180px; /* Wider buttons */
+    text-align: center;
+    border-radius: 3px;
+    transition: background-color 0.2s ease;
+}
+.button:hover {
+    background-color: #6b6b6b;
+    border-color: #ccc;
+}
+.button:active {
+    background-color: #333;
+}
+
+#levelUpScreen .button {
+    display: block; /* Stack options vertically */
+    margin: 8px auto; /* Center buttons */
+}
+
+#highScores li {
+    margin: 5px 0;
+    list-style: none;
+}
+#highScores {
+    padding: 0;
+    max-height: 150px;
+    overflow-y: auto;
+    border: 1px dashed #555;
+    padding: 10px;
+    margin-top: 15px;
+    background: rgba(255,255,255,0.05);
+}
+
+/* --- Touch Controls --- */
+#touchControls {
+    position: fixed;
+    bottom: 15px;
+    left: 15px;
+    width: 130px; /* Larger */
+    height: 130px;
+    background: rgba(100, 100, 100, 0.35);
+    border-radius: 50%;
+    z-index: 5; /* Below screens, above game */
+    display: none; /* Hidden by default, shown on touch devices */
+    border: 2px solid rgba(255, 255, 255, 0.2);
+}
+#touchStick {
+    position: absolute;
+    width: 60px; /* Larger */
+    height: 60px;
+    background: rgba(200, 200, 200, 0.55);
+    border-radius: 50%;
+    top: 35px; /* Center: (130-60)/2 */
+    left: 35px; /* Center: (130-60)/2 */
+    transition: top 0.05s linear, left 0.05s linear; /* Smooth stick return */
+}
+
+#pauseButton {
+   position: fixed;
+   top: 10px;
+   right: 10px;
+    /* Style like other buttons */
+   padding: 8px 12px;
+   background-color: #444;
+   color: #eee;
+   border: 1px solid #888;
+   cursor: pointer;
+   font-family: 'Courier New', Courier, monospace;
+   font-size: 14px;
+   z-index: 6; /* Above touch controls */
+   display: none; /* Shown on touch devices */
+   border-radius: 3px;
+}
+#pauseButton:hover {
+    background-color: #666;
+}
+
+/* --- Mobile Adjustments --- */
+@media (max-width: 700px), (hover: none) and (pointer: coarse) {
+    #gameScreen {
+        font-size: 14px; /* Slightly larger mobile font */
+    }
+    #uiOverlay {
+        font-size: 11px;
+    }
+    .button {
+        font-size: 15px;
+        padding: 10px 18px;
+    }
+    #touchControls {
+        display: block;
+    }
+    #pauseButton {
+        display: block;
+    }
+    #healthBar, #xpBar {
+        width: 45px; /* Smaller bars on mobile */
+        height: 10px;
+    }
+     #uiOverlay span {
+        margin: 0 4px; /* Less spacing */
+    }
+}
