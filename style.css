@@ -72,23 +72,55 @@ body {
     white-space: nowrap; /* Prevent text wrapping */
 }
 
-/* Health and XP Bars */
+/* style.css */
+
+/* ... other styles ... */
+
+/* Health and XP Bars - Parent Container */
+#healthBar, #xpBar {
+    display: inline-block;      /* Treat as a block for width/height but flow inline */
+    vertical-align: middle;     /* Align nicely with adjacent text */
+    height: 12px;               /* Explicit height */
+    width: 60px;                /* Explicit width - adjust if needed */
+    border: 1px solid #666;
+    background-color: #333;     /* Background color of the empty bar */
+    margin-left: 5px;
+    overflow: hidden;           /* *** CRITICAL: This clips the fill bar inside *** */
+    position: relative;         /* Establishes a positioning context (good practice) */
+    box-sizing: border-box;     /* Include border in width/height calculation */
+}
+
+
+/* Health and XP Bars - Parent Container */
 #healthBar, #xpBar {
     display: inline-block;
-    height: 12px; /* Slightly thicker */
-    width: 60px; /* Fixed width for bars */
+    vertical-align: middle;
+    height: 12px;
+    width: 60px;                /* Or your desired width */
     border: 1px solid #666;
     background-color: #333;
     margin-left: 5px;
-    vertical-align: middle;
-    overflow: hidden; /* Hide overflow of fill */
+    overflow: hidden;           /* Keep this - it's essential */
+    position: relative;         /* <<< Ensure this is set */
+    box-sizing: border-box;
 }
+
+/* Health and XP Bars - Inner Fill Element */
 #healthBarFill, #xpBarFill {
-    height: 100%;
-    background-color: red;
-    width: 100%; /* Controlled by JS */
-    transition: width 0.1s linear, background-color 0.2s ease; /* Smooth transitions */
+    position: absolute;         /* <<< Change to absolute positioning */
+    top: 0;                     /* <<< Position at the top edge */
+    left: 0;                    /* <<< Position at the left edge */
+    height: 100%;               /* Fill the parent's height */
+    width: 0%;                  /* Start at 0% width */
+    background-color: red;      /* Default color (for health) */
+    margin: 0;                  /* Reset margin */
+    padding: 0;                 /* Reset padding */
+    /* Keep the transition */
+    transition: width 0.1s linear, background-color 0.2s ease;
+    /* display: block; is no longer needed with position: absolute */
 }
+
+/* Specific color for XP bar fill */
 #xpBarFill {
     background-color: cyan;
 }

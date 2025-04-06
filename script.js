@@ -667,6 +667,57 @@ function render() {
 
 // --- UI Updates ---
 function updateUI() {
+    // Guard checks ensure this doesn't error if called before elements are assigned OR player doesn't exist
+    const playerExists = player && player.health !== undefined && player.maxHealth !== undefined;
+
+    // Log current game state values relevant to bars
+    // console.log(`UI Update - Health: ${playerExists ? player.health : 'N/A'}, MaxHealth: ${playerExists ? player.maxHealth : 'N/A'}, XP: ${xp}, XPNext: ${xpToNextLevel}`);
+
+    if (timerDisplay) timerDisplay.textContent = `Time: ${formatTime(gameTime)}`;
+    if (scoreDisplay) scoreDisplay.textContent = `Score: ${Math.floor(score)}`;
+
+    const currentHealth = playerExists ? player.health : 0;
+    const currentMaxHealth = playerExists ? player.maxHealth : 100; // Use 100 default if player !exist
+
+    if (hpValueDisplay) hpValueDisplay.textContent = currentHealth;
+    if (maxHpValueDisplay) maxHpValueDisplay.textContent = currentMaxHealth;
+    if (levelValueDisplay) levelValueDisplay.textContent = level;
+
+    // Health Bar update
+    if (healthBarFill) { // Check if the element exists
+        let healthPercent = 0; // Default to 0
+        if (currentMaxHealth > 0) {
+            healthPercent = Math.max(0, currentHealth / currentMaxHealth) * 100;
+        }
+        // Log the calculated percentage and the element itself right before setting
+        // console.log(` > Updating Health Bar: Element found? ${!!healthBarFill}, Percent: ${healthPercent}%`);
+        healthBarFill.style.width = `${healthPercent}%`; // Set the width style
+        healthBarFill.style.backgroundColor = healthPercent > 60 ? 'lime' : healthPercent > 30 ? 'orange' : 'red';
+    } else {
+         // Only log error once if element consistently missing
+         if (!window.healthBarMissingLogged) {
+            console.error("ERROR: healthBarFill element NOT FOUND during UI update.");
+            window.healthBarMissingLogged = true; // Prevent flooding console
+         }
+    }
+
+     // XP Bar update
+     if (xpBarFill) { // Check if the element exists
+         let xpPercent = 0; // Default to 0
+         if (xpToNextLevel > 0) {
+             xpPercent = Math.max(0, xp / xpToNextLevel) * 100;
+         }
+          // Log the calculated percentage and the element itself
+        // console.log(` > Updating XP Bar: Element found? ${!!xpBarFill}, Percent: ${xpPercent}%`);
+         xpBarFill.style.width = `${xpPercent}%`; // Set the width style
+     } else {
+         // Only log error once if element consistently missing
+         if (!window.xpBarMissingLogged) {
+            console.error("ERROR: xpBarFill element NOT FOUND during UI update.");
+            window.xpBarMissingLogged = true; // Prevent flooding console
+         }
+     }
+}
     // Guard checks ensure this doesn't error if called before elements are assigned
     if (timerDisplay) timerDisplay.textContent = `Time: ${formatTime(gameTime)}`;
     if (scoreDisplay) scoreDisplay.textContent = `Score: ${Math.floor(score)}`;
@@ -688,8 +739,10 @@ function updateUI() {
      if (xpBarFill && xpToNextLevel > 0) {
          const xpPercent = Math.max(0, xp / xpToNextLevel) * 100;
          xpBarFill.style.width = `${xpPercent}%`;
-     } else if (xpBarFill) { xpBarFill.style.width = '0%'; }
-}
+     } else if (xpBarFill) { xpBarFill.style.width = '0%'; 
+
+     }
+
 
  // --- Game States ---
  function togglePause(showMenu) {
